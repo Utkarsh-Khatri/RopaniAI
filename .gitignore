@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ---- Python / Django ----
 env/
 venv/
@@ -26,3 +27,22 @@ yarn-error.log*
 
 # ---- MacOS system files ----
 .DS_Store
+=======
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+
+# Environment variables
+.env
+
+# Database files
+db/
+
+# Misc / temp
+*.log
+>>>>>>> e7a3261 (first chatbot commit)

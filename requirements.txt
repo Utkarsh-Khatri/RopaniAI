@@ -9,3 +9,16 @@ pytz==2025.2
 six==1.17.0
 sqlparse==0.5.3
 tzdata==2025.2
+python-dotenv
+langchain
+langchain-community
+langchain-huggingface
+langchain-groq
+chromadb
+sentence-transformers
+transformers
+torch
+pypdf
+pymupdf
+accelerate
+tqdm
