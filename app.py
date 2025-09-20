@@ -57,12 +57,17 @@ llm_fallback = HuggingFacePipeline(pipeline=hf_pipeline)
 
 fallback_prompt = PromptTemplate(
     input_variables=["question"],
-    template="Answer the following question based on general knowledge:\n\nQuestion: {question}\nAnswer:"
+    template="Answer this question concisely based on general knowledge:\n{question}"
 )
 fallback_chain = LLMChain(llm=llm_fallback, prompt=fallback_prompt)
 
 # -------------------------------
-# 6. CLI Chat Loop with combined RAG + fallback
+# 6. Keywords for land-related questions
+# -------------------------------
+land_keywords = ["land", "malpot", "property", "kitta", "plot", "ownership", "registration", "survey"]
+
+# -------------------------------
+# 7. CLI Chat Loop with combined RAG + fallback
 # -------------------------------
 print("\n✅ Malpot RAG Chatbot is ready!")
 print("Ask questions about the Malpot documents (type 'exit' to quit)\n")
@@ -77,21 +82,39 @@ while True:
     result = qa_chain_rag.invoke({"query": query})
     answer_rag = result["result"].strip()
 
-    # 2️⃣ Trigger fallback if answer is vague, incomplete, or contains key phrases
-    fallback_keywords = ["doesn't specify", "not mentioned", "the text doesn't"]
-    if len(answer_rag) < 50 or any(kw in answer_rag.lower() for kw in fallback_keywords):
-        # Use fallback LLM
-        answer_fallback = fallback_chain.invoke({"question": query})["text"].strip()
-        # Combine into smooth paragraph
-        answer = f"{answer_rag} Based on general knowledge: {answer_fallback}"
-    else:
-        answer = answer_rag
+    # Check if RAG answer is meaningful
+    fallback_keywords = [
+        "doesn't specify", "not mentioned", "the text doesn't",
+        "I don't know", "cannot find", "uncertain"
+    ]
+    is_rag_empty = len(answer_rag) < 20 or any(kw in answer_rag.lower() for kw in fallback_keywords)
 
-    # 3️⃣ Print the combined answer
+    # 2️⃣ Determine which answer to use
+    if not is_rag_empty:
+        answer = answer_rag
+    else:
+        # Use fallback LLM directly
+        answer_fallback = fallback_chain.invoke({"question": query})["text"].strip()
+        if not answer_fallback or len(answer_fallback) < 10:
+            answer = "I don't know the answer to this question."
+        else:
+            answer = answer_fallback
+
+    # 3️⃣ Print the answer
     print("\nAssistant:", answer)
 
-    # 4️⃣ Show sources if RAG found anything
-    if result.get("source_documents"):
-        print("\n📖 Sources:")
-        for doc in result["source_documents"]:
-            print(f"- Page {doc.metadata.get('page_number', 'N/A')}: {doc.page_content[:150]}...\n")
+    # 4️⃣ Show sources only if question seems about land AND RAG had a meaningful answer
+    if any(kw in query.lower() for kw in land_keywords) and not is_rag_empty and result.get("source_documents"):
+        print("\n📖 Sources (explainable context):")
+        seen_texts = set()
+        for i, doc in enumerate(result["source_documents"], start=1):
+            snippet = doc.page_content[:400].replace("\n", " ").strip()
+            if snippet in seen_texts:
+                continue
+            seen_texts.add(snippet)
+            page = doc.metadata.get("page_number", "N/A")
+            score = doc.metadata.get("score", None)
+            if score:
+                print(f"{i}. Page {page} | Relevance: {score}\n   {snippet}...\n")
+            else:
+                print(f"{i}. Page {page}\n   {snippet}...\n")
