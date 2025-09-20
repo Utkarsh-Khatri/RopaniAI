@@ -1,24 +1,27 @@
-# Ignore Python virtual environment
+# Python / Django
 env/
 venv/
-
-# Ignore Python cache
+*.pyc
 __pycache__/
-*.py[cod]
-
-# Ignore environment files
-*.env
-
-# Ignore Django static/media (optional if you auto-generate these)
-staticfiles/
-media/
-
-# Ignore SQLite database (if using SQLite locally)
 db.sqlite3
 
-# Ignore macOS system files
-.DS_Store
+# Django specific
+/staticfiles/
+/media/
 
-# Ignore IDE/editor files
+# VSCode / IDE
 .vscode/
 .idea/
+
+# MacOS system files
+.DS_Store
+
+# React / Node
+frontend/node_modules/
+frontend/build/
+frontend/.env
+
+# npm / yarn logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
