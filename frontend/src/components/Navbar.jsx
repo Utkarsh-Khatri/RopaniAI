@@ -6,6 +6,15 @@ import Register from "../components/Register"; // import Register modal
 export default function Navbar() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    !!localStorage.getItem("token")
+  );
+  
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+  };
+  
 
   return (
     <>
@@ -26,14 +35,20 @@ export default function Navbar() {
         </div>
 
         <div className="navbar-right">
-          {/* ✅ Login button triggers modal */}
-          <button
-            className="login-btn"
-            onClick={() => setIsLoginOpen(true)}
-          >
-            Login
-          </button>
-        </div>
+  {isLoggedIn ? (
+    <button className="logout-btn" onClick={handleLogout}>
+      Logout
+    </button>
+  ) : (
+    <button
+      className="login-btn"
+      onClick={() => setIsLoginOpen(true)}
+    >
+      Login
+    </button>
+  )}
+</div>
+
       </nav>
 
       {/* ✅ Login Modal */}
