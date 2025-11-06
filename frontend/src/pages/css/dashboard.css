@@ -1,0 +1,66 @@
+.dashboard-container {
+    padding: 40px;
+  }
+  
+  .profile-section {
+    display: flex;
+    justify-content: space-between;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 40px;
+  }
+  
+  .profile-photo img {
+    width: 120px;
+    height: 120px;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+  
+  .profile-form {
+    flex: 1;
+    margin-left: 30px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+  
+  .save-btn {
+    grid-column: span 2;
+    background: #0b3b64;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  .property-section {
+    border-top: 2px solid #eee;
+    padding-top: 20px;
+  }
+  
+  .property-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .property-card {
+    display: flex;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    width: 600px;
+    overflow: hidden;
+  }
+  
+  .property-card img {
+    width: 220px;
+    height: 160px;
+    object-fit: cover;
+  }
+  
+  .property-info {
+    padding: 15px;
+  }
+  
